@@ -26,7 +26,10 @@ export const App = () => {
           setActiveSoullink={setActiveSoullink}
           activeSoullink={activeSoullink}
         ></Side>
-        <Main activeSoullink={activeSoullink}></Main>
+        <Main
+          activeSoullink={activeSoullink}
+          setActiveSoullink={setActiveSoullink}
+        ></Main>
       </div>
     </div>
   );

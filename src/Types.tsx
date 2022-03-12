@@ -1,4 +1,5 @@
 export type Soulpartner = {
+  id: string;
   route: string;
   pokemon1: string;
   pokemon2: string;

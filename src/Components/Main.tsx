@@ -1,10 +1,11 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { Soullink, Soulpartner } from "../Types";
 import { NewPair } from "./NewPair";
-import { getSoullinks } from "../firebase/firestore";
+import { setPartner, getSoullinkById } from "../firebase/firestore";
 
 type props = {
   activeSoullink: Soullink | null;
+  setActiveSoullink: (soullink: Soullink) => void;
 };
 
 export const Main: React.FC<props> = (props) => {
@@ -19,13 +20,11 @@ export const Main: React.FC<props> = (props) => {
   useEffect(() => {
     console.log("UseEffect Main");
     if (props.activeSoullink !== null) {
-      console.log(props.activeSoullink);
       setPlayerArray([
         props.activeSoullink.player1,
         props.activeSoullink.player2,
       ]);
     }
-    console.log(playerArray);
   }, [props.activeSoullink]);
 
   const toggleActivePair = (partner: Soulpartner) => {
@@ -38,18 +37,53 @@ export const Main: React.FC<props> = (props) => {
 
   const handleDropdownChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setKillingPlayer(event.target.value);
-    dummy();
+  };
+
+  const revive = () => {
+    if (props.activeSoullink === null) return;
+    if (activePair === null) return;
+    const pair: Soulpartner = {
+      id: activePair.id,
+      alive: true,
+      killer: "",
+      reason: "",
+      pokemon1: activePair.pokemon1,
+      pokemon1link: activePair.pokemon1link,
+      pokemon2: activePair.pokemon2,
+      pokemon2link: activePair.pokemon2link,
+      route: activePair.route,
+    };
+    setPartner(pair, props.activeSoullink.id);
+    getSoullinkById(props.activeSoullink.id).then((soullink) => {
+      //props.setActiveSoullink(soullink);
+    });
   };
 
   const newDeadPartners = () => {
-    console.log(textfield);
-    console.log(killingPlayer);
+    if (props.activeSoullink === null) return;
+    let killer = "";
+    if (killingPlayer === "player1") {
+      killer = props.activeSoullink.player1;
+    } else if (killingPlayer === "player2") {
+      killer = props.activeSoullink.player2;
+    }
+    if (activePair === null) return;
+    const deadPair: Soulpartner = {
+      id: activePair.id,
+      alive: false,
+      killer: killer,
+      reason: textfield,
+      pokemon1: activePair.pokemon1,
+      pokemon1link: activePair.pokemon1link,
+      pokemon2: activePair.pokemon2,
+      pokemon2link: activePair.pokemon2link,
+      route: activePair.route,
+    };
+    setPartner(deadPair, props.activeSoullink.id);
+    getSoullinkById(props.activeSoullink.id).then((soullink) => {
+      //props.setActiveSoullink(soullink);
+    });
   };
-
-  function dummy() {
-    console.log(activePair);
-    getSoullinks();
-  }
 
   return (
     <div className="mainpage">
@@ -152,7 +186,13 @@ export const Main: React.FC<props> = (props) => {
                     <h2>Killer: {activePair?.killer}</h2>
                     <h2>Grund des Todes: </h2>
                     <h3>{activePair?.reason}</h3>
-                    <button>Klicken zum Wiederbeleben</button>
+                    <button
+                      onClick={() => {
+                        revive();
+                      }}
+                    >
+                      Klicken zum Wiederbeleben
+                    </button>
                   </div>
                 )}
               </div>
