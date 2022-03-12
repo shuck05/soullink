@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { Soullink, Soulpartner } from "../Types";
-import { DropDownList } from "@progress/kendo-react-dropdowns";
 import { NewPair } from "./NewPair";
 
 type props = {
@@ -10,6 +9,10 @@ type props = {
 export const Main: React.FC<props> = (props) => {
   const [activePair, setActivePair] = useState<Soulpartner | null>(null);
   const [newPair, setNewPair] = useState<Boolean>(false);
+  const [textfield, setTextfield] = useState<string>("");
+  const [killingPlayer, setKillingPlayer] = useState<string>(
+    props.activeSoullink.Player1
+  );
 
   useEffect(() => {
     console.log("UseEffect Main");
@@ -22,6 +25,19 @@ export const Main: React.FC<props> = (props) => {
 
   const toggleActivePair = (partner: Soulpartner) => {
     partner === activePair ? setActivePair(null) : setActivePair(partner);
+  };
+
+  const handleTextfieldChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setTextfield(event.target.value);
+  };
+
+  const handleDropdownChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    setKillingPlayer(event.target.value);
+  };
+
+  const newDeadPartners = () => {
+    console.log(textfield);
+    console.log(killingPlayer);
   };
 
   function dummy() {
@@ -77,7 +93,7 @@ export const Main: React.FC<props> = (props) => {
           </ul>
         </div>
         <h2>
-          Zuletzt gespielt am{" "}
+          Letzte Änderung am
           {props.activeSoullink.lastPlayed.toLocaleDateString()}
         </h2>
       </div>
@@ -94,7 +110,13 @@ export const Main: React.FC<props> = (props) => {
                 {activePair.alive ? (
                   <div>
                     <h3>Wer ist verantwortlich?</h3>
-                    <select name="Player" id="players">
+                    <select
+                      name="Player"
+                      id="players"
+                      onChange={(e) => {
+                        handleDropdownChange(e);
+                      }}
+                    >
                       <option value={props.activeSoullink.Player1}>
                         {props.activeSoullink.Player1}
                       </option>
@@ -103,8 +125,17 @@ export const Main: React.FC<props> = (props) => {
                       </option>
                     </select>
                     <h3>Warum sind sie gestorben?</h3>
-                    <input></input>
-                    <button className="button-near-text" onClick={dummy}>
+                    <input
+                      name="Reason"
+                      type="text"
+                      onChange={(e) => {
+                        handleTextfieldChange(e);
+                      }}
+                    ></input>
+                    <button
+                      className="button-near-text"
+                      onClick={newDeadPartners}
+                    >
                       RIP
                     </button>
                   </div>
