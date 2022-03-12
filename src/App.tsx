@@ -3,17 +3,15 @@ import "./App.css";
 import { Side } from "./Components/Side";
 import { Main } from "./Components/Main";
 import { Soullink } from "./Types";
-import { testSoullink, testSoullink2 } from "./DummyData";
+import { getSoullinks } from "./firebase/firestore";
 
 export const App = () => {
-  const [soullinkList, setSoullinkList] = useState([
-    testSoullink,
-    testSoullink2,
-  ]);
-  const [activeSoullink, setActiveSoullink] = useState(testSoullink);
+  const [soullinkList, setSoullinkList] = useState<Soullink[]>([]);
+  const [activeSoullink, setActiveSoullink] = useState<Soullink | null>(null);
 
   useEffect(() => {
     console.log("App UseEffect");
+    getSoullinks().then((arr) => setSoullinkList(arr));
   }, []);
 
   return (

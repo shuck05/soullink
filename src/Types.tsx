@@ -1,19 +1,20 @@
 export type Soulpartner = {
+  route: string;
   pokemon1: string;
   pokemon2: string;
   pokemon1link: string;
   pokemon2link: string;
-  route: string;
   alive: boolean;
   killer: string;
   reason: string;
 };
 
 export type Soullink = {
+  id: string;
   name: string;
-  Player1: string;
-  Player2: string;
+  player1: string;
+  player2: string;
   soulpartner: Soulpartner[];
   lastPlayed: Date;
-  Edition: string;
+  edition: string;
 };
