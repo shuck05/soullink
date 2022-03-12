@@ -110,6 +110,7 @@ export const Main: React.FC<props> = (props) => {
                   </div>
                 ) : (
                   <div>
+                    <h2>Killer: {activePair?.killer}</h2>
                     <h2>Grund des Todes: </h2>
                     <h3>{activePair?.reason}</h3>
                     <button>Klicken zum Wiederbeleben</button>

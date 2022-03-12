@@ -36,7 +36,7 @@ const soulpartner3: Soulpartner = {
   route: "Kraftwerk",
   alive: false,
   killer: "Alex",
-  reason: "Alex hat geintet",
+  reason: "Fast foreward wie ein Anfänger",
 };
 
 export const testSoullink: Soullink = {
