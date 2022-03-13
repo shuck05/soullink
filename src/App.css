@@ -6,6 +6,8 @@
   position: absolute;
   width: 100vw;
   height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
   background-color: rgba(0, 0, 0, 0.8);
 }
 
@@ -91,4 +93,9 @@ select {
 .flex-space-between {
   display: flex;
   justify-content: space-between;
+}
+
+.flex-justify-end {
+  display: flex;
+  justify-content: end;
 }

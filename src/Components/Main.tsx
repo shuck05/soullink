@@ -1,7 +1,11 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { Soullink, Soulpartner } from "../Types";
 import { NewPair } from "./NewPair";
-import { setPartner, getSoullinkById } from "../firebase/firestore";
+import {
+  setPartner,
+  getSoullinkById,
+  deleteSoulpartnerById,
+} from "../firebase/firestore";
 
 type props = {
   activeSoullink: Soullink | null;
@@ -55,14 +59,16 @@ export const Main: React.FC<props> = (props) => {
     };
     setPartner(pair, props.activeSoullink.id);
     getSoullinkById(props.activeSoullink.id).then((soullink) => {
-      //props.setActiveSoullink(soullink);
+      if (soullink === null) return;
+      props.setActiveSoullink(soullink);
+      setActivePair(null);
     });
   };
 
   const newDeadPartners = () => {
     if (props.activeSoullink === null) return;
     let killer = "";
-    if (killingPlayer === "player1") {
+    if (killingPlayer === "player1" || killingPlayer === null) {
       killer = props.activeSoullink.player1;
     } else if (killingPlayer === "player2") {
       killer = props.activeSoullink.player2;
@@ -81,8 +87,47 @@ export const Main: React.FC<props> = (props) => {
     };
     setPartner(deadPair, props.activeSoullink.id);
     getSoullinkById(props.activeSoullink.id).then((soullink) => {
-      //props.setActiveSoullink(soullink);
+      if (soullink === null) return;
+      props.setActiveSoullink(soullink);
+      setActivePair(null);
     });
+  };
+
+  const handleDeleteSoulpartner = () => {
+    if (props.activeSoullink === null) return;
+    if (activePair === null) return;
+    deleteSoulpartnerById(props.activeSoullink.id, activePair.id).then(() => {
+      alert("Erfolgreich gelöscht");
+    });
+    getSoullinkById(props.activeSoullink.id).then((soullink) => {
+      if (soullink === null) return;
+      props.setActiveSoullink(soullink);
+      setActivePair(null);
+    });
+  };
+
+  const getKillCount = () => {
+    if (props.activeSoullink === null) return;
+    let killsPlayer1 = 0;
+    let killsPlayer2 = 0;
+    for (let i = 0; i < props.activeSoullink.soulpartner.length; i++) {
+      if (!props.activeSoullink.soulpartner[i].alive) {
+        if (
+          props.activeSoullink.player1 ===
+          props.activeSoullink.soulpartner[i].killer
+        ) {
+          killsPlayer1++;
+        } else {
+          killsPlayer2++;
+        }
+      }
+    }
+    return (
+      <h2>
+        {"Killcounter: "} {props.activeSoullink.player1}: {killsPlayer1}{" "}
+        {props.activeSoullink.player2}: {killsPlayer2}{" "}
+      </h2>
+    );
   };
 
   return (
@@ -100,7 +145,14 @@ export const Main: React.FC<props> = (props) => {
               Neues Paar
             </h3>
           </div>
-          <div style={{ display: "flex", flexDirection: "column" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              height: "70vh",
+              overflow: "auto",
+            }}
+          >
             <div
               style={{
                 display: "flex",
@@ -134,10 +186,7 @@ export const Main: React.FC<props> = (props) => {
               ))}
             </ul>
           </div>
-          <h2>
-            Letzte Änderung am
-            {props.activeSoullink?.lastPlayed.toLocaleDateString()}
-          </h2>
+          {getKillCount()}
         </div>
       ) : (
         <div></div>
@@ -145,11 +194,18 @@ export const Main: React.FC<props> = (props) => {
 
       <div className="mainpage-right">
         {newPair && props.activeSoullink !== null ? (
-          <NewPair></NewPair>
+          <NewPair
+            activeSoullink={props.activeSoullink}
+            setActiveSoullink={props.setActiveSoullink}
+            setNewPair={setNewPair}
+          ></NewPair>
         ) : (
           <div>
             {activePair !== null ? (
               <div>
+                <div className="flex-justify-end">
+                  <button onClick={handleDeleteSoulpartner}>X</button>
+                </div>
                 <h1>
                   Paar: {activePair?.pokemon1} und {activePair?.pokemon2}
                 </h1>
@@ -205,12 +261,3 @@ export const Main: React.FC<props> = (props) => {
     </div>
   );
 };
-
-/*
-fetch("https://pokeapi.co/api/v2/pokemon/" + r)
-      .then((res) => res.json())
-      .then((data) => {
-        setSpritesPlayer1([...spritesPlayer1, data.sprites.front_default]);
-        console.log(spritesPlayer1);
-      });
-*/
