@@ -8,6 +8,7 @@ export type Soulpartner = {
   alive: boolean;
   killer: string;
   reason: string;
+  catched: Date;
 };
 
 export type Soullink = {

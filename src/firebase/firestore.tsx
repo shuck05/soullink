@@ -7,6 +7,7 @@ import { doc, addDoc, setDoc, getDoc, Timestamp } from "firebase/firestore";
 const db = getFirestore(app);
 
 const getSoullinks = async () => {
+  console.log("getting Soullinks");
   const arr: Soullink[] = [];
   const querySnapshot = await getDocs(collection(db, "soullinks"));
   querySnapshot.forEach((doc) => {
@@ -36,6 +37,7 @@ const getSoullinks = async () => {
         alive: soulpartner.data().alive,
         killer: soulpartner.data().killer,
         reason: soulpartner.data().reason,
+        catched: new Date(soulpartner.data().catched.seconds * 1000),
       };
       arr[i].soulpartner.push(partner);
     });
@@ -47,14 +49,14 @@ const getSoullinks = async () => {
 function comp(a: Soulpartner, b: Soulpartner) {
   if (a.alive && !b.alive) return -1;
   if (!a.alive && b.alive) return 1;
-  if (a.route < b.route) return -1;
+  if (a.catched < b.catched) return -1;
   return 1;
 }
 
 const getSoullinkById = async (id: String) => {
   const soullinkArr: Soullink[] = [];
   const docRef = doc(db, "soullinks/" + id);
-  const docSnap = await getDoc(docRef).then((erg) => {
+  await getDoc(docRef).then((erg) => {
     const data = erg.data();
     if (data === undefined) return null;
     const soullink: Soullink = {
@@ -83,6 +85,7 @@ const getSoullinkById = async (id: String) => {
       alive: soulpartner.data().alive,
       killer: soulpartner.data().killer,
       reason: soulpartner.data().reason,
+      catched: new Date(soulpartner.data().catched.seconds * 1000),
     };
     soullinkArr[0].soulpartner.push(partner);
   });
@@ -95,7 +98,17 @@ const getSoullinkById = async (id: String) => {
 };
 
 const setPartner = async (partner: Soulpartner, id: String) => {
-  const docData = partner;
+  let docData = {
+    pokemon1: partner.pokemon1,
+    pokemon2: partner.pokemon2,
+    pokemon1link: partner.pokemon1link,
+    pokemon2link: partner.pokemon2link,
+    alive: partner.alive,
+    killer: partner.killer,
+    reason: partner.reason,
+    route: partner.route,
+    catched: Timestamp.fromDate(partner.catched),
+  };
   // dateExample: Timestamp.fromDate(new Date("December 10, 1815"))
 
   await setDoc(
@@ -114,6 +127,7 @@ const setNewPair = async (soulpartner: Soulpartner, id: String) => {
     alive: true,
     killer: "",
     reason: "",
+    catched: Timestamp.fromDate(new Date()),
   };
   await addDoc(collection(db, "soullinks/" + id + "/soulpartners"), newPartner);
 };

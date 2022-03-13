@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useState } from "react";
 import { Soullink, Soulpartner } from "../Types";
-import { setNewPair } from "../firebase/firestore";
+import { setNewPair, getSoullinkById } from "../firebase/firestore";
 
 type props = {
   activeSoullink: Soullink | null;
@@ -62,6 +62,7 @@ export const NewPair: React.FC<props> = (props) => {
       alive: true,
       killer: "",
       reason: "",
+      catched: new Date(),
     };
     if (soulPartner.pokemon1link === "") {
       alert("The Pokemon 1 was not found!");
@@ -76,6 +77,10 @@ export const NewPair: React.FC<props> = (props) => {
       setPokemon2("");
       setRoute("");
       props.setNewPair(false);
+    });
+    getSoullinkById(props.activeSoullink.id).then((soullink) => {
+      if (soullink === null) return;
+      props.setActiveSoullink(soullink);
     });
   };
 

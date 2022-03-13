@@ -56,6 +56,7 @@ export const Main: React.FC<props> = (props) => {
       pokemon2: activePair.pokemon2,
       pokemon2link: activePair.pokemon2link,
       route: activePair.route,
+      catched: activePair.catched,
     };
     setPartner(pair, props.activeSoullink.id);
     getSoullinkById(props.activeSoullink.id).then((soullink) => {
@@ -84,6 +85,7 @@ export const Main: React.FC<props> = (props) => {
       pokemon2: activePair.pokemon2,
       pokemon2link: activePair.pokemon2link,
       route: activePair.route,
+      catched: activePair.catched,
     };
     setPartner(deadPair, props.activeSoullink.id);
     getSoullinkById(props.activeSoullink.id).then((soullink) => {
