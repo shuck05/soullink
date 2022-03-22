@@ -4,15 +4,20 @@ import { Side } from "./Components/Side";
 import { Main } from "./Components/Main";
 import { Soullink } from "./Types";
 import { getSoullinks } from "./firebase/firestore";
+import NewSoullink from "./Components/NewSoullink";
 
 export const App = () => {
   const [soullinkList, setSoullinkList] = useState<Soullink[]>([]);
   const [activeSoullink, setActiveSoullink] = useState<Soullink | null>(null);
-
+  const [newSoullink, setNewSoullink] = useState<boolean>(true);
   useEffect(() => {
     console.log("App UseEffect");
     getSoullinks().then((arr) => setSoullinkList(arr));
   }, []);
+
+  const toggleNewSL = () => {
+    setNewSoullink(!newSoullink);
+  };
 
   return (
     <div className="App">
@@ -25,11 +30,16 @@ export const App = () => {
           soullinkList={soullinkList}
           setActiveSoullink={setActiveSoullink}
           activeSoullink={activeSoullink}
+          toggleNewSL={toggleNewSL}
         ></Side>
-        <Main
-          activeSoullink={activeSoullink}
-          setActiveSoullink={setActiveSoullink}
-        ></Main>
+        {newSoullink ? (
+          <Main
+            activeSoullink={activeSoullink}
+            setActiveSoullink={setActiveSoullink}
+          ></Main>
+        ) : (
+          <NewSoullink setActiveSoullink={setActiveSoullink}></NewSoullink>
+        )}
       </div>
     </div>
   );

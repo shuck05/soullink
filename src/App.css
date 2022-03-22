@@ -25,10 +25,12 @@
 
 .Side-left {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   border-right: solid rgba(0, 0, 0, 0.2);
   padding: 2vw;
   min-height: 85vh;
+  flex-direction: column;
+  align-items: center;
 }
 
 .u-List-sidedrawer {
