@@ -5,6 +5,7 @@ type props = {
   soullinkList: Soullink[];
   setActiveSoullink: (soullink: Soullink | null) => void;
   activeSoullink: Soullink | null;
+  toggleNewSL: () => void;
 };
 
 export const Side: React.FC<props> = (props) => {
@@ -14,8 +15,14 @@ export const Side: React.FC<props> = (props) => {
       : props.setActiveSoullink(null);
   };
 
+  const newSL = () => {
+    props.toggleNewSL();
+    props.setActiveSoullink(null);
+  };
+
   return (
     <div className="Side-left">
+      <h2 onClick={newSL}>New Soullink</h2>
       <ul className="u-List-sidedrawer">
         {props.soullinkList.map((e) => (
           <div key={e.name}>

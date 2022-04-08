@@ -141,10 +141,39 @@ const deleteSoulpartnerById = async (
   );
 };
 
+const deleteChallangeById = async (id: String) => {
+  const arr: String[] = [];
+  const querySnapshotSoulpartners = await getDocs(
+    collection(db, "soullinks/" + id + "/soulpartners")
+  );
+  querySnapshotSoulpartners.forEach((soulpartner) => {
+    arr.push(soulpartner.id);
+  });
+
+  for (let i = 0; i < arr.length; i++) {
+    await deleteDoc(doc(db, "soullinks/" + id + "/soulpartners/" + arr[i]));
+  }
+  await deleteDoc(doc(db, "soullinks/" + id));
+  window.location.reload();
+};
+
+const createNewSoullink = async (soullink: Soullink) => {
+  let temp = {
+    name: soullink.name,
+    player1: soullink.player1,
+    player2: soullink.player2,
+    lastPlayed: Timestamp.fromDate(soullink.lastPlayed),
+    edition: soullink.edition,
+  };
+  await addDoc(collection(db, "soullinks/"), temp);
+};
+
 export {
   getSoullinks,
   setPartner,
   getSoullinkById,
   setNewPair,
   deleteSoulpartnerById,
+  deleteChallangeById,
+  createNewSoullink,
 };

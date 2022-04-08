@@ -5,6 +5,7 @@ import {
   setPartner,
   getSoullinkById,
   deleteSoulpartnerById,
+  deleteChallangeById,
 } from "../firebase/firestore";
 
 type props = {
@@ -108,6 +109,11 @@ export const Main: React.FC<props> = (props) => {
     });
   };
 
+  const deleteChallange = () => {
+    if (props.activeSoullink === null) return;
+    deleteChallangeById(props.activeSoullink.id);
+  };
+
   const getKillCount = () => {
     if (props.activeSoullink === null) return;
     let killsPlayer1 = 0;
@@ -188,7 +194,10 @@ export const Main: React.FC<props> = (props) => {
               ))}
             </ul>
           </div>
-          {getKillCount()}
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            {getKillCount()}
+            <h3 onClick={deleteChallange}>Löschen</h3>
+          </div>
         </div>
       ) : (
         <div></div>
