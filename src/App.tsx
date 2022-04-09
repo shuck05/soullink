@@ -5,6 +5,8 @@ import { Main } from "./Components/Main";
 import { Soullink } from "./Types";
 import { getSoullinks } from "./firebase/firestore";
 import NewSoullink from "./Components/NewSoullink";
+import { signOut, getAuth } from "firebase/auth";
+import { app } from "./firebase/firebase";
 
 export const App = () => {
   const [soullinkList, setSoullinkList] = useState<Soullink[]>([]);
@@ -19,11 +21,18 @@ export const App = () => {
     setNewSoullink(!newSoullink);
   };
 
+  const logout = () => {
+    signOut(getAuth(app)).catch(() => {
+      alert("Logout Failed");
+    });
+    window.location.reload();
+  };
+
   return (
     <div className="App">
       <div className="Header">
         <h2>Soullink Schosch</h2>
-        <h2>Maybe ein Button oder so</h2>
+        <h2 onClick={logout}>Logout</h2>
       </div>
       <div className="Page">
         <Side
