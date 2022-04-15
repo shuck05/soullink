@@ -5,7 +5,7 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 export const Login = () => {
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
-  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
   useEffect(() => {
     console.log("UseEffectLogin");
@@ -16,7 +16,7 @@ export const Login = () => {
   }, []);
 
   const login = () => {
-    signInWithEmailAndPassword(auth, email, "321654987")
+    signInWithEmailAndPassword(auth, "test@test.de", password)
       .then(() => {
         setLoggedIn(true);
       })
@@ -38,10 +38,8 @@ export const Login = () => {
     }
   };
 
-  const handleEmailChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
-    console.log(getAuth(app).currentUser);
-    console.log(loggedIn);
+  const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setPassword(event.target.value);
   };
 
   const auth = getAuth(app);
@@ -61,10 +59,10 @@ export const Login = () => {
         >
           <input
             style={{ marginRight: "10px" }}
-            type="text"
+            type="password"
             onKeyPress={handleKeyPress}
             onChange={(e) => {
-              handleEmailChange(e);
+              handlePasswordChange(e);
             }}
           />
           <button onClick={login}>Login</button>
